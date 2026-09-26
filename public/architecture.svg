@@ -1,0 +1,232 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" width="900" height="520" style="font-family: 'Courier New', Courier, monospace; background: #ffffff;">
+
+  <!-- Grid paper background -->
+  <defs>
+    <pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">
+      <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#e8e8e8" stroke-width="0.4"/>
+    </pattern>
+    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+      <rect width="50" height="50" fill="url(#smallGrid)"/>
+      <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#d4d4d4" stroke-width="0.8"/>
+    </pattern>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#111"/>
+    </marker>
+    <marker id="arrowhead-sm" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+      <polygon points="0 0, 6 2.5, 0 5" fill="#555"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="520" fill="#ffffff"/>
+  <rect width="900" height="520" fill="url(#grid)"/>
+
+  <!-- Outer border — heavy rule -->
+  <rect x="12" y="12" width="876" height="496" fill="none" stroke="#111" stroke-width="2"/>
+  <!-- Inner title box -->
+  <rect x="12" y="12" width="876" height="44" fill="#111"/>
+
+  <!-- Title -->
+  <text x="450" y="40" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="bold" letter-spacing="3">PHYSICS SIMULATION LAB — SYSTEM ARCHITECTURE</text>
+  <text x="450" y="52" text-anchor="middle" fill="#aaa" font-size="8" letter-spacing="2">REV 0.1.0  ·  MIT LICENSE  ·  OPEN SOURCE</text>
+
+  <!-- ── Column labels ─────────────────────────────────────────── -->
+  <text x="130" y="76" text-anchor="middle" fill="#555" font-size="7.5" letter-spacing="1.5">BROWSER</text>
+  <text x="450" y="76" text-anchor="middle" fill="#555" font-size="7.5" letter-spacing="1.5">APPLICATION SERVER</text>
+  <text x="750" y="76" text-anchor="middle" fill="#555" font-size="7.5" letter-spacing="1.5">SANDBOX</text>
+
+  <!-- Column dividers -->
+  <line x1="272" y1="68" x2="272" y2="496" stroke="#ccc" stroke-width="0.8" stroke-dasharray="4,4"/>
+  <line x1="610" y1="68" x2="610" y2="496" stroke="#ccc" stroke-width="0.8" stroke-dasharray="4,4"/>
+
+  <!-- ══════════════════════════════════════════════════════════
+       BROWSER COLUMN
+       ══════════════════════════════════════════════════════════ -->
+
+  <!-- Prompt composer box -->
+  <rect x="30" y="88" width="222" height="50" fill="none" stroke="#111" stroke-width="1.5"/>
+  <text x="141" y="105" text-anchor="middle" fill="#111" font-size="8.5" font-weight="bold" letter-spacing="1">PROMPT COMPOSER</text>
+  <text x="141" y="119" text-anchor="middle" fill="#444" font-size="7.5">/ — free-text physics description</text>
+  <text x="141" y="130" text-anchor="middle" fill="#444" font-size="7.5">model selector (Opus 5 / Sonnet 5 / Haiku)</text>
+
+  <!-- Chat thread box -->
+  <rect x="30" y="165" width="105" height="130" fill="none" stroke="#111" stroke-width="1.5"/>
+  <text x="82" y="181" text-anchor="middle" fill="#111" font-size="8" font-weight="bold" letter-spacing="1">CHAT THREAD</text>
+  <line x1="30" y1="186" x2="135" y2="186" stroke="#111" stroke-width="0.8"/>
+  <text x="82" y="200" text-anchor="middle" fill="#444" font-size="7">ask_user widget</text>
+  <text x="82" y="213" text-anchor="middle" fill="#444" font-size="7">streaming tokens</text>
+  <text x="82" y="226" text-anchor="middle" fill="#444" font-size="7">message history</text>
+  <text x="82" y="239" text-anchor="middle" fill="#444" font-size="7">model picker</text>
+  <text x="82" y="253" text-anchor="middle" fill="#444" font-size="7">Trigger.dev transport</text>
+  <text x="82" y="266" text-anchor="middle" fill="#444" font-size="7">useTriggerChat()</text>
+  <text x="82" y="279" text-anchor="middle" fill="#444" font-size="7">JWT refresh</text>
+  <text x="82" y="290" text-anchor="middle" fill="#444" font-size="7">session token mint</text>
+
+  <!-- Preview iframe box -->
+  <rect x="147" y="165" width="105" height="130" fill="none" stroke="#111" stroke-width="1.5"/>
+  <text x="199" y="181" text-anchor="middle" fill="#111" font-size="8" font-weight="bold" letter-spacing="1">PREVIEW</text>
+  <line x1="147" y1="186" x2="252" y2="186" stroke="#111" stroke-width="0.8"/>
+  <text x="199" y="200" text-anchor="middle" fill="#444" font-size="7">&lt;iframe&gt; sandbox</text>
+  <text x="199" y="213" text-anchor="middle" fill="#444" font-size="7">static file server</text>
+  <text x="199" y="226" text-anchor="middle" fill="#444" font-size="7">port 2222</text>
+  <text x="199" y="239" text-anchor="middle" fill="#444" font-size="7">live reload</text>
+  <text x="199" y="253" text-anchor="middle" fill="#444" font-size="7">three.js scene</text>
+  <text x="199" y="266" text-anchor="middle" fill="#444" font-size="7">report panel</text>
+  <text x="199" y="279" text-anchor="middle" fill="#444" font-size="7">equations + limits</text>
+  <text x="199" y="290" text-anchor="middle" fill="#444" font-size="7">signed preview URL</text>
+
+  <!-- Sidebar -->
+  <rect x="30" y="318" width="222" height="60" fill="none" stroke="#111" stroke-width="1.5"/>
+  <text x="141" y="334" text-anchor="middle" fill="#111" font-size="8.5" font-weight="bold" letter-spacing="1">SIDEBAR</text>
+  <line x1="30" y1="339" x2="252" y2="339" stroke="#111" stroke-width="0.8"/>
+  <text x="141" y="353" text-anchor="middle" fill="#444" font-size="7.5">recent simulations (DB list)</text>
+  <text x="141" y="366" text-anchor="middle" fill="#444" font-size="7.5">rename / delete actions</text>
+  <text x="141" y="377" text-anchor="middle" fill="#444" font-size="7.5">no authentication required</text>
+
+  <!-- ══════════════════════════════════════════════════════════
+       APP SERVER COLUMN
+       ══════════════════════════════════════════════════════════ -->
+
+  <!-- Next.js box -->
+  <rect x="290" y="88" width="300" height="80" fill="none" stroke="#111" stroke-width="1.5"/>
+  <text x="440" y="104" text-anchor="middle" fill="#111" font-size="8.5" font-weight="bold" letter-spacing="1">NEXT.JS APP ROUTER</text>
+  <line x1="290" y1="109" x2="590" y2="109" stroke="#111" stroke-width="0.8"/>
+  <text x="440" y="122" text-anchor="middle" fill="#444" font-size="7.5">/ — page.tsx  (NewSimulationComposer)</text>
+  <text x="440" y="135" text-anchor="middle" fill="#444" font-size="7.5">/simulations/[id] — SimulationChat + SimulationMenu</text>
+  <text x="440" y="148" text-anchor="middle" fill="#444" font-size="7.5">/api/simulations/[id]/preview — signed Daytona URL</text>
+  <text x="440" y="161" text-anchor="middle" fill="#444" font-size="7.5">Server Actions: create · rename · delete · startSession · mintToken</text>
+
+  <!-- Trigger.dev box -->
+  <rect x="290" y="188" width="300" height="110" fill="none" stroke="#111" stroke-width="1.5"/>
+  <text x="440" y="204" text-anchor="middle" fill="#111" font-size="8.5" font-weight="bold" letter-spacing="1">TRIGGER.DEV  chat.agent</text>
+  <text x="440" y="216" text-anchor="middle" fill="#555" font-size="7" letter-spacing="1">simulationChat  ·  "simulation-chat"</text>
+  <line x1="290" y1="220" x2="590" y2="220" stroke="#111" stroke-width="0.8"/>
+  <text x="306" y="234" fill="#444" font-size="7.5">onChatStart</text>
+  <text x="400" y="234" fill="#777" font-size="7">→ create Daytona sandbox</text>
+  <text x="306" y="248" fill="#444" font-size="7.5">onTurnStart</text>
+  <text x="400" y="248" fill="#777" font-size="7">→ persist messages</text>
+  <text x="306" y="262" fill="#444" font-size="7.5">run</text>
+  <text x="400" y="262" fill="#777" font-size="7">→ streamText → Claude</text>
+  <text x="306" y="276" fill="#444" font-size="7.5">onTurnComplete</text>
+  <text x="400" y="276" fill="#777" font-size="7">→ save cursor + access token</text>
+  <text x="306" y="290" fill="#444" font-size="7.5">tools</text>
+  <text x="400" y="290" fill="#777" font-size="7">→ read/write/list/delete/ask_user</text>
+
+  <!-- LLM + DB row -->
+  <rect x="290" y="318" width="138" height="50" fill="none" stroke="#111" stroke-width="1.5"/>
+  <text x="359" y="334" text-anchor="middle" fill="#111" font-size="8" font-weight="bold" letter-spacing="1">ANTHROPIC LLM</text>
+  <line x1="290" y1="339" x2="428" y2="339" stroke="#111" stroke-width="0.8"/>
+  <text x="359" y="352" text-anchor="middle" fill="#444" font-size="7">Claude Opus 5</text>
+  <text x="359" y="363" text-anchor="middle" fill="#444" font-size="7">Claude Sonnet 5  ·  Haiku 4.5</text>
+
+  <rect x="452" y="318" width="138" height="50" fill="none" stroke="#111" stroke-width="1.5"/>
+  <text x="521" y="334" text-anchor="middle" fill="#111" font-size="8" font-weight="bold" letter-spacing="1">POSTGRESQL</text>
+  <line x1="452" y1="339" x2="590" y2="339" stroke="#111" stroke-width="0.8"/>
+  <text x="521" y="352" text-anchor="middle" fill="#444" font-size="7">Neon  ·  Drizzle ORM</text>
+  <text x="521" y="363" text-anchor="middle" fill="#444" font-size="7">simulations table (no auth)</text>
+
+  <!-- Physics catalog legend -->
+  <rect x="290" y="386" width="300" height="90" fill="none" stroke="#111" stroke-width="1.5"/>
+  <text x="440" y="401" text-anchor="middle" fill="#111" font-size="8.5" font-weight="bold" letter-spacing="1">PHYSICS CATALOG  (31 SOLVERS)</text>
+  <line x1="290" y1="406" x2="590" y2="406" stroke="#111" stroke-width="0.8"/>
+  <text x="306" y="419" fill="#444" font-size="7">Classical Mechanics</text>
+  <text x="306" y="432" fill="#444" font-size="7">Fluid Statics + Dynamics</text>
+  <text x="306" y="445" fill="#444" font-size="7">Thermodynamics</text>
+  <text x="306" y="458" fill="#444" font-size="7">DC + AC Circuits</text>
+  <text x="440" y="419" fill="#444" font-size="7">Electromagnetism</text>
+  <text x="440" y="432" fill="#444" font-size="7">Special Relativity</text>
+  <text x="440" y="445" fill="#444" font-size="7">Photoelectric · de Broglie</text>
+  <text x="440" y="458" fill="#444" font-size="7">Bohr Atom · Radioactive Decay</text>
+  <text x="306" y="471" fill="#777" font-size="6.5">All solvers: RK4 integration · { value, unit } inputs · SI outputs · metadata</text>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SANDBOX COLUMN
+       ══════════════════════════════════════════════════════════ -->
+
+  <!-- Daytona sandbox outer box -->
+  <rect x="628" y="88" width="246" height="320" fill="none" stroke="#111" stroke-width="2"/>
+  <text x="751" y="104" text-anchor="middle" fill="#111" font-size="8.5" font-weight="bold" letter-spacing="1">DAYTONA LINUX SANDBOX</text>
+  <line x1="628" y1="109" x2="874" y2="109" stroke="#111" stroke-width="1.5"/>
+
+  <!-- /home/daytona/simulation/ label -->
+  <text x="640" y="122" fill="#555" font-size="7" letter-spacing="0.5">/home/daytona/simulation/</text>
+  <line x1="628" y1="126" x2="874" y2="126" stroke="#bbb" stroke-width="0.5"/>
+
+  <!-- index.html + report.js -->
+  <rect x="640" y="130" width="222" height="26" fill="none" stroke="#888" stroke-width="1"/>
+  <text x="751" y="141" text-anchor="middle" fill="#444" font-size="7.5" font-weight="bold">index.html  ·  report.js  ·  style.css</text>
+  <text x="751" y="151" text-anchor="middle" fill="#777" font-size="6.5">entry point  ·  error reporter (read-only)  ·  base styles</text>
+
+  <!-- agent-written files -->
+  <rect x="640" y="162" width="222" height="36" fill="none" stroke="#111" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="751" y="175" text-anchor="middle" fill="#111" font-size="7.5" font-weight="bold">AGENT-WRITTEN  (per simulation)</text>
+  <text x="751" y="188" text-anchor="middle" fill="#444" font-size="7">model.js  ·  view.js  ·  scene.js  ·  scenario.json</text>
+  <text x="751" y="197" text-anchor="middle" fill="#777" font-size="6.5">dashed = agent modifies only these files</text>
+
+  <!-- simulation/ sub-box -->
+  <rect x="640" y="204" width="222" height="108" fill="none" stroke="#111" stroke-width="1.5"/>
+  <text x="751" y="218" text-anchor="middle" fill="#111" font-size="7.5" font-weight="bold" letter-spacing="0.5">simulation/  (read-only solvers)</text>
+  <line x1="640" y1="222" x2="862" y2="222" stroke="#111" stroke-width="0.8"/>
+  <text x="656" y="234" fill="#444" font-size="7">index.js — barrel export</text>
+  <text x="656" y="246" fill="#444" font-size="7">integration.js — RK4</text>
+  <text x="656" y="258" fill="#444" font-size="7">units.js — 34 quantity families</text>
+  <text x="656" y="270" fill="#444" font-size="7">validation.js</text>
+  <text x="656" y="282" fill="#444" font-size="7">quality.js — verification tools</text>
+  <text x="656" y="294" fill="#444" font-size="7">models/ — 9 solver files</text>
+  <text x="656" y="306" fill="#444" font-size="7">ui/ — report panel, plots, inputs</text>
+
+  <!-- engine/ sub-box -->
+  <rect x="640" y="318" width="222" height="42" fill="none" stroke="#111" stroke-width="1.5"/>
+  <text x="751" y="332" text-anchor="middle" fill="#111" font-size="7.5" font-weight="bold">engine/  (three.js toolkit, read-only)</text>
+  <text x="751" y="345" text-anchor="middle" fill="#777" font-size="7">visualization only — no reported quantities</text>
+  <text x="751" y="357" text-anchor="middle" fill="#777" font-size="6.5">models · materials · lights · controls · particles · hud</text>
+
+  <!-- Static server note -->
+  <rect x="628" y="416" width="246" height="28" fill="#f0f0f0" stroke="#111" stroke-width="1"/>
+  <text x="751" y="429" text-anchor="middle" fill="#111" font-size="7.5" font-weight="bold">STATIC FILE SERVER  :2222</text>
+  <text x="751" y="440" text-anchor="middle" fill="#555" font-size="7">no build step · browser ES modules · import map</text>
+
+  <!-- ══════════════════════════════════════════════════════════
+       ARROWS
+       ══════════════════════════════════════════════════════════ -->
+
+  <!-- Prompt composer → Next.js (user submits) -->
+  <line x1="252" y1="113" x2="288" y2="113" stroke="#111" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="270" y="109" text-anchor="middle" fill="#333" font-size="6.5">HTTP</text>
+
+  <!-- Next.js → Trigger.dev -->
+  <line x1="440" y1="168" x2="440" y2="186" stroke="#111" stroke-width="1.2" marker-end="url(#arrowhead)"/>
+
+  <!-- Trigger.dev ↔ LLM -->
+  <line x1="440" y1="298" x2="440" y2="316" stroke="#111" stroke-width="1.2" marker-end="url(#arrowhead)"/>
+
+  <!-- Next.js ↔ DB -->
+  <line x1="521" y1="168" x2="521" y2="316" stroke="#555" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrowhead-sm)"/>
+
+  <!-- Trigger.dev → Sandbox (tool calls) -->
+  <line x1="590" y1="243" x2="626" y2="243" stroke="#111" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <text x="608" y="239" text-anchor="middle" fill="#333" font-size="6.5">tools</text>
+
+  <!-- Preview ← Sandbox (signed URL) -->
+  <line x1="628" y1="430" x2="252" y2="230" stroke="#555" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrowhead-sm)"/>
+  <text x="445" y="342" fill="#555" font-size="6.5" transform="rotate(-18, 445, 342)">signed preview URL</text>
+
+  <!-- Chat thread ↔ Next.js -->
+  <line x1="141" y1="165" x2="290" y2="148" stroke="#555" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrowhead-sm)"/>
+
+  <!-- ══════════════════════════════════════════════════════════
+       BOTTOM BAR
+       ══════════════════════════════════════════════════════════ -->
+  <rect x="12" y="460" width="876" height="36" fill="none" stroke="#111" stroke-width="1"/>
+  <line x1="220" y1="460" x2="220" y2="496" stroke="#bbb" stroke-width="0.8"/>
+  <line x1="450" y1="460" x2="450" y2="496" stroke="#bbb" stroke-width="0.8"/>
+  <line x1="680" y1="460" x2="680" y2="496" stroke="#bbb" stroke-width="0.8"/>
+  <text x="116" y="474" text-anchor="middle" fill="#444" font-size="7" letter-spacing="0.5">NO AUTH  ·  NO BILLING  ·  MIT</text>
+  <text x="116" y="488" text-anchor="middle" fill="#777" font-size="6.5">fully open source</text>
+  <text x="335" y="474" text-anchor="middle" fill="#444" font-size="7" letter-spacing="0.5">AI NEVER INVENTS PHYSICS</text>
+  <text x="335" y="488" text-anchor="middle" fill="#777" font-size="6.5">hard-constrained to solver catalog</text>
+  <text x="565" y="474" text-anchor="middle" fill="#444" font-size="7" letter-spacing="0.5">EVERY OUTPUT SHOWS</text>
+  <text x="565" y="488" text-anchor="middle" fill="#777" font-size="6.5">equations · assumptions · limits · verification</text>
+  <text x="790" y="474" text-anchor="middle" fill="#444" font-size="7" letter-spacing="0.5">STACK</text>
+  <text x="790" y="488" text-anchor="middle" fill="#777" font-size="6.5">Next.js · Trigger.dev · Daytona · Claude · Neon</text>
+
+</svg>
