@@ -95,9 +95,12 @@ export function ChatPreview({
 
     async function load() {
       try {
-        const response = await fetch(`/api/simulations/${simulationId}/preview`, {
-          signal: controller.signal,
-        })
+        const response = await fetch(
+          `/api/simulations/${simulationId}/preview`,
+          {
+            signal: controller.signal,
+          }
+        )
         const body = await response.json()
 
         if (!response.ok) {
@@ -119,7 +122,8 @@ export function ChatPreview({
         // The route logs the two it answers deliberately (404, 409); what
         // reaches here on top of those is a 500 or the fetch itself failing.
         Sentry.logger.error(
-          Sentry.logger.fmt`Preview unavailable for simulation ${simulationId}: ${message}`,
+          Sentry.logger
+            .fmt`Preview unavailable for simulation ${simulationId}: ${message}`,
           {
             "simulation.id": simulationId,
             "simulation.revision": revision,

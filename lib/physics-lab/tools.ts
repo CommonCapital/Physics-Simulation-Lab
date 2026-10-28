@@ -178,10 +178,13 @@ export function createSimulationTools(simulationId: string) {
         // failure here fails the whole turn rather than one edit. It is logged
         // at the point it happens because the rethrow reaches each caller
         // separately and would otherwise read as several unrelated failures.
-        logger.error(logger.fmt`Could not get a sandbox for simulation ${simulationId}`, {
-          "simulation.id": simulationId,
-          ...describeError(error),
-        })
+        logger.error(
+          logger.fmt`Could not get a sandbox for simulation ${simulationId}`,
+          {
+            "simulation.id": simulationId,
+            ...describeError(error),
+          }
+        )
 
         throw error
       })
@@ -342,7 +345,9 @@ export function createSimulationTools(simulationId: string) {
       }),
       execute: ({ path: filePath }) =>
         expected("list_files", simulationId, filePath, async () => {
-          const target = resolveSimulationPath(filePath ?? ".", { allowRoot: true })
+          const target = resolveSimulationPath(filePath ?? ".", {
+            allowRoot: true,
+          })
           const box = await sandbox()
 
           if (target !== SIMULATION_DIR && !(await statFile(box, target))) {
@@ -514,7 +519,10 @@ function resolveSimulationPath(
 
   const resolved = path.posix.resolve(SIMULATION_DIR, trimmed)
 
-  if (resolved !== SIMULATION_DIR && !resolved.startsWith(`${SIMULATION_DIR}/`)) {
+  if (
+    resolved !== SIMULATION_DIR &&
+    !resolved.startsWith(`${SIMULATION_DIR}/`)
+  ) {
     throw new ToolInputError(
       `"${trimmed}" is outside the simulation directory. Every path is relative to ${SIMULATION_DIR} and has to stay inside it.`
     )

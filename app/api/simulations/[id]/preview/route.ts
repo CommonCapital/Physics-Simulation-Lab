@@ -24,7 +24,8 @@ export async function GET(
 
   if (!simulation) {
     Sentry.logger.warn(
-      Sentry.logger.fmt`Preview requested for simulation ${id}, which does not exist`,
+      Sentry.logger
+        .fmt`Preview requested for simulation ${id}, which does not exist`,
       { "simulation.id": id, "http.response.status_code": 404 }
     )
 
@@ -33,7 +34,8 @@ export async function GET(
 
   if (!simulation.sandboxId) {
     Sentry.logger.info(
-      Sentry.logger.fmt`Preview requested for simulation ${id} before it has a sandbox`,
+      Sentry.logger
+        .fmt`Preview requested for simulation ${id} before it has a sandbox`,
       { "simulation.id": id, "http.response.status_code": 409 }
     )
 

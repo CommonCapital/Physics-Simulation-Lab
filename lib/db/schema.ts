@@ -32,11 +32,8 @@ export const simulations = pgTable(
       .default(sql`now()`)
       .$onUpdate(() => new Date()),
   },
-  (table) => [
-    index("simulations_created_at_idx").on(table.createdAt.desc()),
-  ]
+  (table) => [index("simulations_created_at_idx").on(table.createdAt.desc())]
 )
 
 export type Simulation = typeof simulations.$inferSelect
 export type NewSimulation = typeof simulations.$inferInsert
-

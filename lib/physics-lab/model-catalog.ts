@@ -25,6 +25,8 @@ export type SimulationModelId = (typeof SIMULATION_MODELS)[number]["id"]
 
 export const DEFAULT_SIMULATION_MODEL_ID: SimulationModelId = "claude-opus-5"
 
-export function isSimulationModelId(value: unknown): value is SimulationModelId {
+export function isSimulationModelId(
+  value: unknown
+): value is SimulationModelId {
   return SIMULATION_MODELS.some((model) => model.id === value)
 }

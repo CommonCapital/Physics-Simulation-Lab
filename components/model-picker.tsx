@@ -10,7 +10,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { InputGroupButton } from "@/components/ui/input-group"
-import { SIMULATION_MODELS, type SimulationModelId } from "@/lib/physics-lab/model-catalog"
+import {
+  SIMULATION_MODELS,
+  type SimulationModelId,
+} from "@/lib/physics-lab/model-catalog"
 
 /**
  * Which model the next turn is built with.
