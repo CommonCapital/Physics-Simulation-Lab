@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     // Seed files copied verbatim into each game's sandbox. They are plain
     // browser html/css/js served as-is, not part of this app's source.
     "lib/physics-lab/runtime/**",
+    // The Python physics worker's virtualenv.
+    "workers/*/.venv/**",
   ]),
 ]);
 
