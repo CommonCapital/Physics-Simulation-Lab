@@ -9,7 +9,7 @@ import {
   InputGroupAddon,
   InputGroupTextarea,
 } from "@/components/ui/input-group"
-import type { GameModelId } from "@/lib/games/model-catalog"
+import type { SimulationModelId } from "@/lib/physics-lab/model-catalog"
 
 export function ChatComposer({
   value,
@@ -29,8 +29,8 @@ export function ChatComposer({
   /** Cancels the turn in flight. Required for the button to offer a stop. */
   onStop?: () => void
   /** The model the next turn runs on, and the way to change it. */
-  modelId: GameModelId
-  onModelChange: (modelId: GameModelId) => void
+  modelId: SimulationModelId
+  onModelChange: (modelId: SimulationModelId) => void
   /** A turn is in flight, so the submit button becomes a stop button. */
   streaming?: boolean
   disabled?: boolean

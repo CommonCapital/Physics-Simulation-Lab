@@ -1,4 +1,4 @@
-// No-op stub — Clerk billing has been removed from the open-source version.
+// No-op stub — billing has been removed from the open-source version.
 // This file is kept so any existing import of reconcileCredits still compiles.
 
 /** No-op: credit reconciliation against a subscription is not applicable. */

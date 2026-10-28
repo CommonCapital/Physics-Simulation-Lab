@@ -158,6 +158,3 @@ export const simulationChat = chat.agent({
     })
   },
 })
-
-// Backward-compatible export so any remaining references to gameChat still compile.
-export const gameChat = simulationChat

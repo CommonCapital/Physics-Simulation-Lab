@@ -4,23 +4,23 @@ import type { FileInfo, Sandbox } from "@daytona/sdk"
 import { tool } from "ai"
 import { z } from "zod"
 
-import { GAME_DIR, getSimulationSandbox } from "@/lib/daytona/utils"
+import { SIMULATION_DIR, getSimulationSandbox } from "@/lib/daytona/utils"
 import { describeError, elapsed, logger } from "@/lib/observability"
 
-// Every path the agent gives is resolved inside this directory, and the game
+// Every path the agent gives is resolved inside this directory, and the simulation
 // directory is the whole of what the agent can touch: it is what the static
 // server serves, so nothing outside it can reach the player anyway.
 //
 // Paths are also restricted to this character set. It covers every filename a
-// browser game needs, and it keeps a path safe to interpolate into the one
-// shell command below without quoting games.
+// browser simulation needs, and it keeps a path safe to interpolate into the one
+// shell command below without quoting simulations.
 const SAFE_PATH = /^[a-zA-Z0-9._/-]+$/
 
-// Big enough for any hand-written game file and small enough that a stray
+// Big enough for any hand-written simulation file and small enough that a stray
 // binary or generated blob can't blow up the turn's context.
 const MAX_FILE_BYTES = 128_000
 
-// How deep `list_files` walks. Games are a handful of files next to
+// How deep `list_files` walks. Simulations are a handful of files next to
 // index.html, so this reaches every level one could plausibly have.
 const LIST_DEPTH = 5
 
@@ -149,29 +149,27 @@ const askUser = tool({
 })
 
 /**
- * The tools the agent builds a game with: the file tools it edits the game
+ * The tools the agent builds a simulation with: the file tools it edits the simulation
  * through, and `ask_user` for the questions it puts back to the user.
  *
- * Built per game rather than declared once, because every file call has to
- * land in *this* game's sandbox and the model never sees a game id — the id is
+ * Built per simulation rather than declared once, because every file call has to
+ * land in *this* simulation's sandbox and the model never sees a simulation id — the id is
  * closed over here instead of being an argument the model could get wrong.
  *
- * Tools report expected failures — a missing file, a path outside the game
+ * Tools report expected failures — a missing file, a path outside the simulation
  * directory, an ambiguous edit — as ordinary results, so the model reads what
  * went wrong and fixes it on the next step. Anything else (a sandbox that
  * won't start, a network error) throws and fails the turn.
  */
 export function createSimulationTools(simulationId: string) {
-  // Backward-compatible alias: keep accepting gameId parameter name
-  const gameId = simulationId
-  // One sandbox lookup per turn instead of one per call: `getGameSandbox`
+  // One sandbox lookup per turn instead of one per call: `getSimulationSandbox`
   // costs a query and a Daytona round-trip, and a turn is many edits. Only a
   // resolved handle is kept — a failed lookup clears the cache so the next
   // tool call retries rather than replaying the same rejection.
   let pending: Promise<Sandbox> | undefined
 
   const sandbox = () => {
-    pending ??= getSimulationSandbox(gameId)
+    pending ??= getSimulationSandbox(simulationId)
       .then(({ sandbox }) => sandbox)
       .catch((error: unknown) => {
         pending = undefined
@@ -180,10 +178,13 @@ export function createSimulationTools(simulationId: string) {
         // failure here fails the whole turn rather than one edit. It is logged
         // at the point it happens because the rethrow reaches each caller
         // separately and would otherwise read as several unrelated failures.
-        logger.error(logger.fmt`Could not get a sandbox for game ${gameId}`, {
-          "game.id": gameId,
-          ...describeError(error),
-        })
+        logger.error(
+          logger.fmt`Could not get a sandbox for simulation ${simulationId}`,
+          {
+            "simulation.id": simulationId,
+            ...describeError(error),
+          }
+        )
 
         throw error
       })
@@ -194,17 +195,17 @@ export function createSimulationTools(simulationId: string) {
   return {
     read_file: tool({
       description:
-        "Read a file from the game directory. Read a file before editing it — what is on disk is what the player is running, including everything written on earlier turns.",
+        "Read a file from the simulation directory. Read a file before editing it — what is on disk is what the user is running, including everything written on earlier turns.",
       inputSchema: z.object({
         path: z
           .string()
           .describe(
-            'Path relative to the game directory, e.g. "index.html" or "src/player.js".'
+            'Path relative to the simulation directory, e.g. "index.html" or "src/scene.js".'
           ),
       }),
       execute: ({ path: filePath }) =>
-        expected("read_file", gameId, filePath, async () => {
-          const target = resolveGamePath(filePath)
+        expected("read_file", simulationId, filePath, async () => {
+          const target = resolveSimulationPath(filePath)
           const box = await sandbox()
           const info = await statFile(box, target)
 
@@ -228,20 +229,20 @@ export function createSimulationTools(simulationId: string) {
 
     write_file: tool({
       description:
-        "Write a file in the game directory, creating it or replacing its contents whole. Missing parent directories are created. Use replace_text instead when changing part of an existing file.",
+        "Write a file in the simulation directory, creating it or replacing its contents whole. Missing parent directories are created. Use replace_text instead when changing part of an existing file.",
       inputSchema: z.object({
         path: z
           .string()
           .describe(
-            'Path relative to the game directory, e.g. "index.html" or "src/player.js".'
+            'Path relative to the simulation directory, e.g. "index.html" or "src/scene.js".'
           ),
         content: z
           .string()
           .describe("The complete contents of the file, not a fragment."),
       }),
       execute: ({ path: filePath, content }) =>
-        expected("write_file", gameId, filePath, async () => {
-          const target = resolveGamePath(filePath)
+        expected("write_file", simulationId, filePath, async () => {
+          const target = resolveSimulationPath(filePath)
 
           if (Buffer.byteLength(content, "utf8") > MAX_FILE_BYTES) {
             return `That content is over the ${MAX_FILE_BYTES} byte write limit. Split the file into smaller modules.`
@@ -252,8 +253,8 @@ export function createSimulationTools(simulationId: string) {
 
           // `uploadFile` won't create the parent, and `createFolder` fails on
           // one that already exists — `mkdir -p` covers both, and the path is
-          // known safe to interpolate by `resolveGamePath`.
-          if (directory !== GAME_DIR) {
+          // known safe to interpolate by `resolveSimulationPath`.
+          if (directory !== SIMULATION_DIR) {
             await box.process.executeCommand(`mkdir -p '${directory}'`)
           }
 
@@ -265,11 +266,11 @@ export function createSimulationTools(simulationId: string) {
 
     replace_text: tool({
       description:
-        "Replace an exact snippet of text in a file in the game directory. Prefer this over write_file for changes that touch part of a file, so the rest of the game stays exactly as it is.",
+        "Replace an exact snippet of text in a file in the simulation directory. Prefer this over write_file for changes that touch part of a file, so the rest of the simulation stays exactly as it is.",
       inputSchema: z.object({
         path: z
           .string()
-          .describe("Path to the file, relative to the game directory."),
+          .describe("Path to the file, relative to the simulation directory."),
         find: z
           .string()
           .describe(
@@ -288,8 +289,8 @@ export function createSimulationTools(simulationId: string) {
           ),
       }),
       execute: ({ path: filePath, find, replace, replace_all: replaceAll }) =>
-        expected("replace_text", gameId, filePath, async () => {
-          const target = resolveGamePath(filePath)
+        expected("replace_text", simulationId, filePath, async () => {
+          const target = resolveSimulationPath(filePath)
 
           if (find === "") {
             return "find cannot be empty — pass the exact text to replace."
@@ -333,21 +334,23 @@ export function createSimulationTools(simulationId: string) {
 
     list_files: tool({
       description:
-        "List the files in the game directory. Use it at the start of a turn to see what the game is made of before changing it.",
+        "List the files in the simulation directory. Use it at the start of a turn to see what the simulation is made of before changing it.",
       inputSchema: z.object({
         path: z
           .string()
           .optional()
           .describe(
-            "Subdirectory to list, relative to the game directory. Defaults to the whole game directory."
+            "Subdirectory to list, relative to the simulation directory. Defaults to the whole simulation directory."
           ),
       }),
       execute: ({ path: filePath }) =>
-        expected("list_files", gameId, filePath, async () => {
-          const target = resolveGamePath(filePath ?? ".", { allowRoot: true })
+        expected("list_files", simulationId, filePath, async () => {
+          const target = resolveSimulationPath(filePath ?? ".", {
+            allowRoot: true,
+          })
           const box = await sandbox()
 
-          if (target !== GAME_DIR && !(await statFile(box, target))) {
+          if (target !== SIMULATION_DIR && !(await statFile(box, target))) {
             return `No directory at ${relative(target)}.`
           }
 
@@ -363,8 +366,8 @@ export function createSimulationTools(simulationId: string) {
             .sort((a, b) => a.path.localeCompare(b.path))
 
           if (files.length === 0) {
-            return target === GAME_DIR
-              ? "The game directory is empty."
+            return target === SIMULATION_DIR
+              ? "The simulation directory is empty."
               : `${relative(target)} has no files in it.`
           }
 
@@ -376,17 +379,17 @@ export function createSimulationTools(simulationId: string) {
 
     delete_file: tool({
       description:
-        "Delete a file or directory from the game directory. Only for files the game no longer uses — deleting index.html leaves the preview with nothing to load.",
+        "Delete a file or directory from the simulation directory. Only for files the simulation no longer uses — deleting index.html leaves the preview with nothing to load.",
       inputSchema: z.object({
         path: z
           .string()
           .describe(
-            "Path to the file or directory to delete, relative to the game directory."
+            "Path to the file or directory to delete, relative to the simulation directory."
           ),
       }),
       execute: ({ path: filePath }) =>
-        expected("delete_file", gameId, filePath, async () => {
-          const target = resolveGamePath(filePath)
+        expected("delete_file", simulationId, filePath, async () => {
+          const target = resolveSimulationPath(filePath)
           const box = await sandbox()
           const info = await statFile(box, target)
 
@@ -395,7 +398,7 @@ export function createSimulationTools(simulationId: string) {
           }
 
           // A directory needs `recursive` or the delete fails; the path is
-          // already known to be inside the game directory.
+          // already known to be inside the simulation directory.
           await box.fs.deleteFile(target, info.isDir)
 
           return info.isDir
@@ -410,8 +413,6 @@ export function createSimulationTools(simulationId: string) {
 
 /** The tools, as declared on the chat agent. */
 export type SimulationTools = ReturnType<typeof createSimulationTools>
-export const createGameTools = createSimulationTools
-export type GameTools = SimulationTools
 
 /**
  * A failure the model can fix by calling the tool differently.
@@ -428,8 +429,8 @@ class ToolInputError extends Error {}
  *
  * This is the only path every tool call passes through, which makes it the one
  * place worth logging them from: one wide event per call, carrying the tool,
- * the game, the path it was pointed at and what it cost. That record is the
- * agent's entire effect on a game — the chat thread shows what the model said
+ * the simulation, the path it was pointed at and what it cost. That record is the
+ * agent's entire effect on a simulation — the chat thread shows what the model said
  * it did, and this shows what actually reached the sandbox.
  *
  * The three outcomes are deliberately three levels. A refused call is a `warn`:
@@ -440,23 +441,23 @@ class ToolInputError extends Error {}
  */
 async function expected(
   tool: string,
-  gameId: string,
+  simulationId: string,
   target: string | undefined,
   run: () => Promise<string>
 ): Promise<string> {
   const startedAt = performance.now()
 
-  // `gen_ai.tool.name` and the game id go on every one of these, so a single
+  // `gen_ai.tool.name` and the simulation id go on every one of these, so a single
   // turn's worth of calls can be pulled up as a group and read in order.
   const attributes: Record<string, string | number | boolean> = {
     "gen_ai.operation.name": "execute_tool",
     "gen_ai.tool.name": tool,
-    "game.id": gameId,
+    "simulation.id": simulationId,
   }
 
   // The path the model asked for, before it is resolved — an argument the
   // model chose, and the thing most worth having when a call went wrong.
-  // Contents are never logged: game source stays out of Sentry, in line with
+  // Contents are never logged: simulation source stays out of Sentry, in line with
   // the `httpBodies: []` stance in the SDK configs.
   if (target !== undefined && target !== "") {
     attributes["code.file.path"] = target
@@ -493,14 +494,14 @@ async function expected(
 }
 
 /**
- * Turns a path from the model into an absolute path inside the game directory.
+ * Turns a path from the model into an absolute path inside the simulation directory.
  *
  * This is the only place a tool path becomes a real path, so it is also the
  * confinement: an absolute path, a `..` climb or a symlink-ish name all end up
- * measured against `GAME_DIR` here, and anything landing outside is refused
+ * measured against `SIMULATION_DIR` here, and anything landing outside is refused
  * before it reaches the sandbox.
  */
-function resolveGamePath(
+function resolveSimulationPath(
   input: string,
   { allowRoot = false }: { allowRoot?: boolean } = {}
 ): string {
@@ -516,26 +517,29 @@ function resolveGamePath(
     )
   }
 
-  const resolved = path.posix.resolve(GAME_DIR, trimmed)
+  const resolved = path.posix.resolve(SIMULATION_DIR, trimmed)
 
-  if (resolved !== GAME_DIR && !resolved.startsWith(`${GAME_DIR}/`)) {
+  if (
+    resolved !== SIMULATION_DIR &&
+    !resolved.startsWith(`${SIMULATION_DIR}/`)
+  ) {
     throw new ToolInputError(
-      `"${trimmed}" is outside the game directory. Every path is relative to ${GAME_DIR} and has to stay inside it.`
+      `"${trimmed}" is outside the simulation directory. Every path is relative to ${SIMULATION_DIR} and has to stay inside it.`
     )
   }
 
-  if (resolved === GAME_DIR && !allowRoot) {
+  if (resolved === SIMULATION_DIR && !allowRoot) {
     throw new ToolInputError(
-      "That is the game directory itself. Name a file inside it."
+      "That is the simulation directory itself. Name a file inside it."
     )
   }
 
   return resolved
 }
 
-/** A path as the agent wrote it — relative to the game directory. */
+/** A path as the agent wrote it — relative to the simulation directory. */
 function relative(fullPath: string): string {
-  return path.posix.relative(GAME_DIR, fullPath) || "."
+  return path.posix.relative(SIMULATION_DIR, fullPath) || "."
 }
 
 /**

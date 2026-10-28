@@ -77,7 +77,7 @@ function withoutQuery(value: string) {
  * is the whole reload: the agent's edits land in the sandbox during the turn,
  * so the build to show is whatever is on disk when the turn ends.
  *
- * Mounted under a `key` of the game id, so switching games remounts this with
+ * Mounted under a `key` of the simulation id, so switching simulations remounts this with
  * fresh state instead of showing the previous game while the new url loads.
  */
 export function ChatPreview({
@@ -95,9 +95,12 @@ export function ChatPreview({
 
     async function load() {
       try {
-        const response = await fetch(`/api/simulations/${simulationId}/preview`, {
-          signal: controller.signal,
-        })
+        const response = await fetch(
+          `/api/simulations/${simulationId}/preview`,
+          {
+            signal: controller.signal,
+          }
+        )
         const body = await response.json()
 
         if (!response.ok) {
@@ -119,7 +122,8 @@ export function ChatPreview({
         // The route logs the two it answers deliberately (404, 409); what
         // reaches here on top of those is a 500 or the fetch itself failing.
         Sentry.logger.error(
-          Sentry.logger.fmt`Preview unavailable for simulation ${simulationId}: ${message}`,
+          Sentry.logger
+            .fmt`Preview unavailable for simulation ${simulationId}: ${message}`,
           {
             "simulation.id": simulationId,
             "simulation.revision": revision,

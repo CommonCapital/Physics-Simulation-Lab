@@ -23,16 +23,10 @@ export const SIMULATION_MODELS = [
 
 export type SimulationModelId = (typeof SIMULATION_MODELS)[number]["id"]
 
-// Keep backward-compatible aliases so any remaining import of the old names
-// from lib/physics-lab still compiles.
-export const GAME_MODELS = SIMULATION_MODELS
-export type GameModelId = SimulationModelId
-
 export const DEFAULT_SIMULATION_MODEL_ID: SimulationModelId = "claude-opus-5"
-export const DEFAULT_GAME_MODEL_ID = DEFAULT_SIMULATION_MODEL_ID
 
-export function isSimulationModelId(value: unknown): value is SimulationModelId {
+export function isSimulationModelId(
+  value: unknown
+): value is SimulationModelId {
   return SIMULATION_MODELS.some((model) => model.id === value)
 }
-
-export const isGameModelId = isSimulationModelId

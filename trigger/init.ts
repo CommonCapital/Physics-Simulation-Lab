@@ -15,7 +15,7 @@ Sentry.init({
   dsn: process.env.SENTRY_DSN,
   defaultIntegrations: false,
 
-  // The worker shares `@/lib/daytona/utils` and `@/lib/games/tools` with the
+  // The worker shares `@/lib/daytona/utils` and `@/lib/physics-lab/tools` with the
   // Next server, and both log through `Sentry.logger`. Without this those calls
   // are silent no-ops on this side of the fence.
   enableLogs: true,

@@ -11,7 +11,7 @@ import type { FileUpload } from "@daytona/sdk"
 // points at a build artifact, while the working directory is the project root
 // in dev and the deployment root in production — both of which `runtime/*`
 // keeps its path relative to (see `additionalFiles` in `@/trigger.config`).
-const RUNTIME_DIR = path.join(process.cwd(), "lib", "games", "runtime")
+const RUNTIME_DIR = path.join(process.cwd(), "lib", "physics-lab", "runtime")
 
 /**
  * Every file under `./runtime`, addressed to where it belongs in a sandbox.

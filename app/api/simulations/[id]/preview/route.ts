@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/nextjs"
 import {
   PREVIEW_PORT,
   PREVIEW_URL_TTL_SECONDS,
-  startGameServer,
+  startSimulationServer,
 } from "@/lib/daytona/utils"
 import { getSimulation } from "@/lib/physics-lab/queries"
 import { elapsed } from "@/lib/observability"
@@ -24,7 +24,8 @@ export async function GET(
 
   if (!simulation) {
     Sentry.logger.warn(
-      Sentry.logger.fmt`Preview requested for simulation ${id}, which does not exist`,
+      Sentry.logger
+        .fmt`Preview requested for simulation ${id}, which does not exist`,
       { "simulation.id": id, "http.response.status_code": 404 }
     )
 
@@ -33,7 +34,8 @@ export async function GET(
 
   if (!simulation.sandboxId) {
     Sentry.logger.info(
-      Sentry.logger.fmt`Preview requested for simulation ${id} before it has a sandbox`,
+      Sentry.logger
+        .fmt`Preview requested for simulation ${id} before it has a sandbox`,
       { "simulation.id": id, "http.response.status_code": 409 }
     )
 
@@ -43,7 +45,7 @@ export async function GET(
     )
   }
 
-  const { sandbox } = await startGameServer(simulation.sandboxId)
+  const { sandbox } = await startSimulationServer(simulation.sandboxId)
   const { url } = await sandbox.getSignedPreviewUrl(
     PREVIEW_PORT,
     PREVIEW_URL_TTL_SECONDS

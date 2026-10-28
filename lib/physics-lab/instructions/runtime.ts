@@ -1,4 +1,4 @@
-import { GAME_DIR, PREVIEW_PORT } from "@/lib/daytona/utils"
+import { SIMULATION_DIR, PREVIEW_PORT } from "@/lib/daytona/utils"
 
 /**
  * The sandbox the simulation is built in and served from.
@@ -7,8 +7,8 @@ import { GAME_DIR, PREVIEW_PORT } from "@/lib/daytona/utils"
  * and serves, interpolated rather than restated, so the agent can't be told
  * about a layout the sandbox doesn't have.
  *
- * The seeded tree is whatever is under `@/lib/games/runtime`, walked and
- * uploaded wholesale by `@/lib/games/seed`, so a module added there arrives in
+ * The seeded tree is whatever is under `@/lib/physics-lab/runtime`, walked and
+ * uploaded wholesale by `@/lib/physics-lab/seed`, so a module added there arrives in
  * every sandbox — but only the parts described here are ones the agent will
  * think to use. Keep this list in step with that directory.
  */
@@ -17,10 +17,10 @@ export const runtime = `# Where the simulation lives
 Each simulation has its own Linux sandbox, and it is the same sandbox for the
 whole conversation — what you wrote on an earlier turn is still on disk.
 
-The source lives in ${GAME_DIR}. That directory is the simulation: nothing
+The source lives in ${SIMULATION_DIR}. That directory is the simulation: nothing
 outside it is served, and nothing that isn't a file in it survives the turn.
 
-${GAME_DIR}/index.html is the entry point — it is what loads at "/", so it has
+${SIMULATION_DIR}/index.html is the entry point — it is what loads at "/", so it has
 to exist and has to be the running simulation.
 
 # What is already there
