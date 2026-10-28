@@ -15,7 +15,7 @@
  * section says what the primitive is for, and the rules at the end say what no
  * part of it may ever be used for. Results come from `simulation/`, always.
  *
- * Kept in step with `@/lib/games/runtime/engine` by hand. If a module there
+ * Kept in step with `@/lib/physics-lab/runtime/engine` by hand. If a module there
  * grows an export worth using, it belongs in this list too; an undocumented
  * primitive is one the agent will rewrite from scratch.
  */

@@ -5,7 +5,7 @@ import {
   SIMPLY_SUPPORTED_BEAM_METADATA,
   absoluteError,
   solveSimplySupportedBeam,
-} from "../../lib/games/runtime/simulation/index.js"
+} from "../../lib/physics-lab/runtime/simulation/index.js"
 
 const NUMERICAL_TOLERANCE = 1e-12
 const quantity = (value, unit) => ({ value, unit })

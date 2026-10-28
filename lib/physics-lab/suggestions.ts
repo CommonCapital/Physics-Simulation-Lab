@@ -19,7 +19,7 @@ import {
  * three words, and the agent needs a specification.
  *
  * Every prompt covers a scenario that is fully within the approved solver
- * catalog in `@/lib/games/runtime/simulation`. Each carries every quantity
+ * catalog in `@/lib/physics-lab/runtime/simulation`. Each carries every quantity
  * the model needs, with its unit, so the first turn can build without
  * asking questions first. Prompts stay in the user's voice — nothing here
  * names a solver function, a file, or a unit symbol the code uses

@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { InputGroupButton } from "@/components/ui/input-group"
-import { GAME_MODELS, type GameModelId } from "@/lib/games/model-catalog"
+import { SIMULATION_MODELS, type SimulationModelId } from "@/lib/physics-lab/model-catalog"
 
 /**
  * Which model the next turn is built with.
@@ -27,12 +27,12 @@ export function ModelPicker({
   modelId,
   onModelChange,
 }: {
-  modelId: GameModelId
-  onModelChange: (modelId: GameModelId) => void
+  modelId: SimulationModelId
+  onModelChange: (modelId: SimulationModelId) => void
 }) {
-  // Total in practice — `GameModelId` is derived from this same list — but not
+  // Total in practice — `SimulationModelId` is derived from this same list — but not
   // provably so to the type checker, and the trigger has to render something.
-  const selected = GAME_MODELS.find((model) => model.id === modelId)
+  const selected = SIMULATION_MODELS.find((model) => model.id === modelId)
 
   return (
     <DropdownMenu>
@@ -53,9 +53,9 @@ export function ModelPicker({
           // The group's value is one of these ids by construction — the items
           // below are the only things that can set it — but `RadioGroup` is
           // typed for arbitrary values and can't know that.
-          onValueChange={(value) => onModelChange(value as GameModelId)}
+          onValueChange={(value) => onModelChange(value as SimulationModelId)}
         >
-          {GAME_MODELS.map((model) => (
+          {SIMULATION_MODELS.map((model) => (
             <DropdownMenuRadioItem
               key={model.id}
               value={model.id}

@@ -8,7 +8,7 @@ import {
   integrateRK4,
   relativeError,
   rk4Step,
-} from "../../lib/games/runtime/simulation/index.js"
+} from "../../lib/physics-lab/runtime/simulation/index.js"
 
 function solveExponential(timeStep) {
   const steps = Math.round(1 / timeStep)

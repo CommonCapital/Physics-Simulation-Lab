@@ -41,7 +41,7 @@ Sentry.init({
   //
   // It earns its keep because all four runtimes report into one Sentry project,
   // and two of the modules that log — `@/lib/daytona/utils` and
-  // `@/lib/games/tools` — run in more than one of them, emitting the same
+  // `@/lib/physics-lab/tools` — run in more than one of them, emitting the same
   // messages from each.
   beforeSendLog: (log) => {
     // `trace` and `debug` are development aids. They stay out of production

@@ -40,10 +40,3 @@ export const simulations = pgTable(
 export type Simulation = typeof simulations.$inferSelect
 export type NewSimulation = typeof simulations.$inferInsert
 
-// ---------------------------------------------------------------------------
-// Backward-compatible re-exports so any code still importing "games" compiles.
-// Remove these once all callers are updated.
-// ---------------------------------------------------------------------------
-export const games = simulations
-export type Game = Simulation
-export type NewGame = NewSimulation

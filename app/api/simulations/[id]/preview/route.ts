@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/nextjs"
 import {
   PREVIEW_PORT,
   PREVIEW_URL_TTL_SECONDS,
-  startGameServer,
+  startSimulationServer,
 } from "@/lib/daytona/utils"
 import { getSimulation } from "@/lib/physics-lab/queries"
 import { elapsed } from "@/lib/observability"
@@ -43,7 +43,7 @@ export async function GET(
     )
   }
 
-  const { sandbox } = await startGameServer(simulation.sandboxId)
+  const { sandbox } = await startSimulationServer(simulation.sandboxId)
   const { url } = await sandbox.getSignedPreviewUrl(
     PREVIEW_PORT,
     PREVIEW_URL_TTL_SECONDS

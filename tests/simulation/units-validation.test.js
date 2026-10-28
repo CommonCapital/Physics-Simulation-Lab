@@ -9,7 +9,7 @@ import {
   assertPositive,
   convertUnit,
   requireField,
-} from "../../lib/games/runtime/simulation/index.js"
+} from "../../lib/physics-lab/runtime/simulation/index.js"
 
 test("converts explicitly supported compatible units", () => {
   const conversions = [

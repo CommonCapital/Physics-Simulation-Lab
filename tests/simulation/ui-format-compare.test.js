@@ -16,7 +16,7 @@ import {
   isValidPoint,
   splitIntoSegments,
   validateNumericInput,
-} from "../../lib/games/runtime/simulation/ui/index.js"
+} from "../../lib/physics-lab/runtime/simulation/ui/index.js"
 
 test("formats numbers at fixed significant digits across magnitudes", () => {
   assert.equal(formatNumber(9.80665), "9.807")

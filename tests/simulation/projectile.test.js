@@ -6,7 +6,7 @@ import {
   absoluteError,
   integrateRK4,
   solveProjectileMotion,
-} from "../../lib/games/runtime/simulation/index.js"
+} from "../../lib/physics-lab/runtime/simulation/index.js"
 
 const LENGTH_TOLERANCE = 1e-12
 const TIME_TOLERANCE = 1e-12

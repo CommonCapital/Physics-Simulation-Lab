@@ -9,32 +9,34 @@ import { db, simulations } from "@/lib/db/client"
 import { readRuntimeFiles } from "@/lib/physics-lab/seed"
 import { describeError, elapsed, logger } from "@/lib/observability"
 
-// Where the game's source lives inside the sandbox. `/home/daytona` is the
+// Where the simulation's source lives inside the sandbox. `/home/daytona` is the
 // sandbox user's home, so this is the path a dev server would be pointed at.
-// Exported because the agent is told this path in `@/lib/games/instructions` —
+// Exported because the agent is told this path in `@/lib/physics-lab/instructions` —
 // the prompt and the server have to be pointed at the same directory.
-export const GAME_DIR = "/home/daytona/game"
+// The path keeps its old "game" name so sandboxes created before the rename
+// still serve their files.
+export const SIMULATION_DIR = "/home/daytona/game"
 
 /**
- * Creates the Daytona sandbox a game is built in and records it on the game.
+ * Creates the Daytona sandbox a simulation is built in and records it on the simulation.
  *
- * The sandbox starts seeded with the files in `@/lib/games/runtime`, one of
- * which is a placeholder page, so the game has something servable from its
+ * The sandbox starts seeded with the files in `@/lib/physics-lab/runtime`, one of
+ * which is a placeholder page, so the simulation has something servable from its
  * very first moment, before the agent has written any code.
  *
  * The sandbox id is saved last: a row with a `sandboxId` therefore always names
  * a sandbox that exists and is seeded, and a crash in between leaks an unused
- * sandbox rather than pointing the game at a half-built one.
+ * sandbox rather than pointing the simulation at a half-built one.
  */
 export async function createSimulationSandbox(
   simulationId: string
 ): Promise<{ sandbox: Sandbox }> {
   const startedAt = performance.now()
-  const { folders, files } = await readRuntimeFiles(GAME_DIR)
+  const { folders, files } = await readRuntimeFiles(SIMULATION_DIR)
 
   const sandbox = await daytona.create({ labels: { simulationId } })
 
-  await sandbox.fs.createFolder(GAME_DIR, "755")
+  await sandbox.fs.createFolder(SIMULATION_DIR, "755")
 
   for (const folder of folders) {
     await sandbox.fs.createFolder(folder, "755")
@@ -59,9 +61,6 @@ export async function createSimulationSandbox(
 
   return { sandbox }
 }
-
-// Backward-compatible alias
-export const createGameSandbox = createSimulationSandbox
 
 /**
  * Deletes every Daytona sandbox belonging to a simulation, and reports how many went.
@@ -139,18 +138,15 @@ export async function deleteSimulationSandboxes(
   return deleted
 }
 
-// Backward-compatible alias
-export const deleteGameSandboxes = deleteSimulationSandboxes
-
 /**
- * The game's sandbox, created if it has none and started if it was stopped.
+ * The simulation's sandbox, created if it has none and started if it was stopped.
  *
  * Every tool the agent calls needs a running sandbox and none of them should
  * have to care why one might be missing, so this is the single entry point:
- * a tool asks for the game's sandbox and either gets a usable one or an error.
+ * a tool asks for the simulation's sandbox and either gets a usable one or an error.
  *
  * `onChatStart` already creates the sandbox before the first turn streams, so
- * the create path here is a fallback — it covers games that predate sandboxes
+ * the create path here is a fallback — it covers simulations that predate sandboxes
  * and a first turn whose creation crashed. Sandboxes also stop themselves once
  * idle, which is the common case for a thread resumed after a while.
  */
@@ -202,10 +198,7 @@ export async function getSimulationSandbox(
   return { sandbox }
 }
 
-// Backward-compatible alias
-export const getGameSandbox = getSimulationSandbox
-
-// The port the game's static server listens on inside the sandbox. Nothing
+// The port the simulation's static server listens on inside the sandbox. Nothing
 // else in the sandbox uses it; it just has to be a value the server and the
 // preview link agree on — hence exported, for whoever mints that link.
 export const PREVIEW_PORT = 3000
@@ -216,14 +209,14 @@ export const PREVIEW_URL_TTL_SECONDS = 3600
 
 // Where the server's own output goes, so a failed start has something to
 // report beyond "it isn't answering".
-const SERVER_LOG = "/tmp/game-server.log"
+const SERVER_LOG = "/tmp/simulation-server.log"
 
 // Roughly ten seconds of grace, spent inside the sandbox rather than in
 // round-trips from here.
 const START_RETRIES = 10
 
 /**
- * Starts (or reuses) the static server for a game's sandbox, and hands back the
+ * Starts (or reuses) the static server for a simulation's sandbox, and hands back the
  * running sandbox for the caller to mint a preview url from.
  *
  * Idempotent by design — this runs on every preview load. A health check comes
@@ -232,7 +225,7 @@ const START_RETRIES = 10
  * take the log with it, so spawning blindly would be both wasteful and
  * misleading.
  */
-export async function startGameServer(
+export async function startSimulationServer(
   sandboxId: string
 ): Promise<{ sandbox: Sandbox }> {
   const startedAt = performance.now()
@@ -252,7 +245,7 @@ export async function startGameServer(
     // is waiting on, so this returns instead of blocking for the server's
     // lifetime. The log is where to look when a preview comes back empty.
     await sandbox.process.executeCommand(
-      `nohup python3 -m http.server ${PREVIEW_PORT} --directory ${GAME_DIR} > ${SERVER_LOG} 2>&1 &`
+      `nohup python3 -m http.server ${PREVIEW_PORT} --directory ${SIMULATION_DIR} > ${SERVER_LOG} 2>&1 &`
     )
 
     // Binding the port takes a moment longer than spawning does, and a url
@@ -266,7 +259,7 @@ export async function startGameServer(
       // failure (a base image without python3, a port taken by something else)
       // reads as one thing rather than as scattered 500s.
       logger.error(
-        logger.fmt`Game server failed to start in sandbox ${sandboxId}`,
+        logger.fmt`Simulation server failed to start in sandbox ${sandboxId}`,
         {
           "sandbox.id": sandboxId,
           "sandbox.was_stopped": wasStopped,
@@ -276,7 +269,7 @@ export async function startGameServer(
       )
 
       throw new Error(
-        `Game server failed to start in sandbox ${sandboxId}: ${output}`
+        `Simulation server failed to start in sandbox ${sandboxId}: ${output}`
       )
     }
   }
@@ -285,7 +278,7 @@ export async function startGameServer(
   // took: whether the sandbox had to be woken, and whether a server was already
   // on the port. A cold load pays both and takes seconds; a warm one is a
   // health check and a signature.
-  logger.info(logger.fmt`Game server ready in sandbox ${sandboxId}`, {
+  logger.info(logger.fmt`Simulation server ready in sandbox ${sandboxId}`, {
     "sandbox.id": sandboxId,
     "sandbox.was_stopped": wasStopped,
     "server.reused": alreadyServing,

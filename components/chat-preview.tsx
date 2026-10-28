@@ -77,7 +77,7 @@ function withoutQuery(value: string) {
  * is the whole reload: the agent's edits land in the sandbox during the turn,
  * so the build to show is whatever is on disk when the turn ends.
  *
- * Mounted under a `key` of the game id, so switching games remounts this with
+ * Mounted under a `key` of the simulation id, so switching simulations remounts this with
  * fresh state instead of showing the previous game while the new url loads.
  */
 export function ChatPreview({
