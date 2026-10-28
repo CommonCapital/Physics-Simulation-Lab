@@ -37,3 +37,7 @@ next-env.d.ts
 .neon
 
 .trigger
+# physics worker (Python)
+/workers/physics/.venv/
+__pycache__/
+.pytest_cache/

@@ -14,7 +14,9 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "trigger:dev": "trigger dev",
-    "trigger:deploy": "trigger deploy"
+    "trigger:deploy": "trigger deploy",
+    "spec:schema": "node scripts/export-scene-spec-schema.ts",
+    "test:physics": "node --test tests/scene-spec/*.test.ts && node scripts/export-scene-spec-schema.ts --check && cd workers/physics && uv run pytest -q"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.45",
